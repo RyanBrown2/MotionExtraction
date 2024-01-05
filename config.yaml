@@ -1,3 +1,4 @@
 camera_height: 720
 camera_num: 0
 camera_width: 1280
+motion_delay: 1

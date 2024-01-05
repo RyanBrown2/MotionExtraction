@@ -46,7 +46,9 @@ class MotionExtraction:
         self.window = window
         self.config = {}
         self.load_config()
+        print("Creating Camera")
         self.cap = cv2.VideoCapture(self.config['camera_num'])
+        print("Setting Camera Properties")
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.config['camera_width'])
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.config['camera_height'])
 
@@ -58,15 +60,14 @@ class MotionExtraction:
 
     def load_config(self):
         # check if config file exists
-        # if not os.path.exists(CONFIG_PATH):
-        #     with open(CONFIG_PATH, 'w') as f:
-        #         yaml.dump(DEFAULT_CONFIG, f)
-        #     self.config = DEFAULT_CONFIG
-        # else:
-        #     with open(CONFIG_PATH, 'r') as f:
-        #         data = yaml.safe_load(f)
-        #     self.config = data
-        self.config = DEFAULT_CONFIG
+        if not os.path.exists(CONFIG_PATH):
+            with open(CONFIG_PATH, 'w') as f:
+                yaml.dump(DEFAULT_CONFIG, f)
+            self.config = DEFAULT_CONFIG
+        else:
+            with open(CONFIG_PATH, 'r') as f:
+                data = yaml.safe_load(f)
+            self.config = data
 
     def setup(self):
         label_widget = Label(self.window)
@@ -76,6 +77,9 @@ class MotionExtraction:
 
     def open_camera(self, widget):
         ret, frame = self.cap.read()
+        if not ret:
+            messagebox.showerror("Error", "Failed to open camera")
+            return
 
         opencv_image = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 
